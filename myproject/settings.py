@@ -83,16 +83,22 @@ DATABASES = {
 # For production deployment
 import os
 if os.environ.get('DATABASE_URL'):
-    import dj_database_url
-    db_from_env = dj_database_url.config(conn_max_age=600)
-    DATABASES['default'].update(db_from_env)
+    try:
+        import dj_database_url
+        db_from_env = dj_database_url.config(conn_max_age=600)
+        DATABASES['default'].update(db_from_env)
+    except ImportError:
+        pass
 elif os.environ.get('RAILWAY_STATIC_URL'):
     # Railway environment detected
-    import dj_database_url
-    DATABASES['default'] = dj_database_url.config(
-        default=os.environ.get('DATABASE_URL'),
-        conn_max_age=600
-    )
+    try:
+        import dj_database_url
+        DATABASES['default'] = dj_database_url.config(
+            default=os.environ.get('DATABASE_URL'),
+            conn_max_age=600
+        )
+    except ImportError:
+        pass
 
 
 # Password validation
